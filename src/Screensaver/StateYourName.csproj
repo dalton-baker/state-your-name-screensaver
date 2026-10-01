@@ -28,7 +28,6 @@
     <!-- Only trim the framework; MonoGame and FontStashSharp keep everything. -->
     <PublishTrimmed>true</PublishTrimmed>
     <TrimMode>partial</TrimMode>
-    <UseSystemResourceKeys>true</UseSystemResourceKeys>
     <DebuggerSupport>false</DebuggerSupport>
     <EventSourceSupport>false</EventSourceSupport>
     <DebugType>none</DebugType>
