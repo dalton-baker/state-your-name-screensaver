@@ -128,6 +128,34 @@ public sealed class Prim
 	public void Glow(Vector2 center, float radius, Color color) =>
 		_batch.Draw(_glow, center, null, color, 0, new Vector2(128, 128), radius / 127.5f, SpriteEffects.None, 0);
 
+	/// <summary>Fills a simple polygon with horizontal scanline spans (even-odd rule).</summary>
+	public void FillPolygon(System.Collections.Generic.IReadOnlyList<Vector2> points, Color color)
+	{
+		float top = float.MaxValue, bottom = float.MinValue;
+		foreach (var p in points) { top = Math.Min(top, p.Y); bottom = Math.Max(bottom, p.Y); }
+		float step = 1f / PixelScale;
+		var crossings = new System.Collections.Generic.List<float>();
+		for (float y = top + step / 2; y < bottom; y += step)
+		{
+			crossings.Clear();
+			for (int i = 0; i < points.Count; i++)
+			{
+				var a = points[i]; var b = points[(i + 1) % points.Count];
+				if ((a.Y <= y) == (b.Y <= y)) continue;
+				crossings.Add(a.X + (y - a.Y) / (b.Y - a.Y) * (b.X - a.X));
+			}
+			crossings.Sort();
+			for (int i = 0; i + 1 < crossings.Count; i += 2)
+				RectF(new Vector2(crossings[i], y - step / 2), new Vector2(crossings[i + 1] - crossings[i], step), color);
+		}
+	}
+
+	public void Polyline(System.Collections.Generic.IReadOnlyList<Vector2> points, Color color, float thickness = 1, bool closed = true)
+	{
+		for (int i = 0; i + (closed ? 0 : 1) < points.Count; i++)
+			Line(points[i], points[(i + 1) % points.Count], color, thickness);
+	}
+
 	/// <summary>A soft band (like an asteroid belt halo) built from concentric hairlines.</summary>
 	public void Band(Vector2 center, float radius, float halfWidth, Color color, float coreOpacity, float edgeOpacity)
 	{

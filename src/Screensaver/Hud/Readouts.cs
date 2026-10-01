@@ -47,8 +47,7 @@ public static class Readouts
 
 	public static void Vessel(Prim p, Text text, Vector2 at, Vector2 size, float time, bool exhaust, float fade)
 	{
-		var center = at + new Vector2(size.X * 0.52f, size.Y * 0.42f + MathF.Sin(time * 0.6f) * 3);
-		SystemView.DrawShipShape(p, center, 0, size.X / 30f, fade, exhaust, lineScale: 0.45f);
+		ShipSchematic.Draw(p, text, at, new Vector2(size.X, size.Y - 34), time, exhaust, fade);
 		string caption = "OBJECT VESSEL  //  CREW IN STASIS";
 		text.Draw(caption, new Vector2(at.X + (size.X - text.Measure(caption, 14, 1.5f).X) / 2, at.Y + size.Y - 26), 14, Palette.Dim * fade, 1.5f);
 	}
