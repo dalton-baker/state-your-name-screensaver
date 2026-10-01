@@ -1,0 +1,46 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!--
+    One project for every OS (MonoGame's OpenGL backend). On Windows, publishing produces
+    StateYourName.exe, which is renamed to StateYourName.scr:
+
+      dotnet publish src/Screensaver -c Release -r win-x64
+
+    Publishing is self-contained, trimmed, and single-file, so no .NET install is needed
+    and the result stays small (~13 MB).
+  -->
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <RollForward>Major</RollForward>
+    <AssemblyName>StateYourName</AssemblyName>
+    <RootNamespace>StateYourNameScreensaver</RootNamespace>
+    <Nullable>enable</Nullable>
+    <InvariantGlobalization>true</InvariantGlobalization>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <ApplicationIcon>Icon.ico</ApplicationIcon>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(RuntimeIdentifier)' != ''">
+    <SelfContained>true</SelfContained>
+    <PublishSingleFile>true</PublishSingleFile>
+    <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
+    <EnableCompressionInSingleFile>true</EnableCompressionInSingleFile>
+    <!-- Only trim the framework; MonoGame and FontStashSharp keep everything. -->
+    <PublishTrimmed>true</PublishTrimmed>
+    <TrimMode>partial</TrimMode>
+    <UseSystemResourceKeys>true</UseSystemResourceKeys>
+    <DebuggerSupport>false</DebuggerSupport>
+    <EventSourceSupport>false</EventSourceSupport>
+    <DebugType>none</DebugType>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Fonts\CourierPrime-Regular.ttf" LogicalName="CourierPrime-Regular.ttf" />
+    <None Remove="Fonts\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="MonoGame.Framework.DesktopGL" Version="3.8.5.1" />
+    <PackageReference Include="FontStashSharp.MonoGame" Version="1.6.1" />
+  </ItemGroup>
+</Project>

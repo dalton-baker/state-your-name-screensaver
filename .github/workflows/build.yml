@@ -20,14 +20,9 @@ jobs:
         with:
           dotnet-version: 8.0.x
 
+      # Self-contained, trimmed, single-file (see the csproj), so no .NET install is needed.
       - name: Publish single-file executable
-        run: >-
-          dotnet publish platforms/Windows/StateYourName.Windows.csproj
-          -c Release -r win-x64 --self-contained
-          -p:PublishSingleFile=true
-          -p:IncludeNativeLibrariesForSelfExtract=true
-          -p:EnableCompressionInSingleFile=true
-          -o artifacts/publish
+        run: dotnet publish src/Screensaver/StateYourName.csproj -c Release -r win-x64 -o artifacts/publish
 
       - name: Package StateYourName.scr
         shell: pwsh
@@ -51,12 +46,12 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: gh release create "${{ github.ref_name }}" artifacts/StateYourName-screensaver.zip --title "${{ github.ref_name }}" --generate-notes
 
-  desktopgl:
-    name: Cross-platform preview build
+  linux:
+    name: Linux build
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
       - uses: actions/setup-dotnet@v6
         with:
           dotnet-version: 8.0.x
-      - run: dotnet build platforms/DesktopGL/StateYourName.DesktopGL.csproj -c Release
+      - run: dotnet publish src/Screensaver/StateYourName.csproj -c Release -r linux-x64 -o artifacts/linux

@@ -9,7 +9,7 @@ A Windows screensaver set in the world of **State Your Name**, a space-explorati
 1. Download `StateYourName-screensaver.zip` from the [latest release](https://github.com/dalton-baker/state-your-name-screensaver/releases/latest), or from the newest [build run](https://github.com/dalton-baker/state-your-name-screensaver/actions/workflows/build.yml).
 2. Unzip it, right-click **StateYourName.scr**, and choose **Install**.
 
-Choose **Test** instead to try it without installing. Move the mouse or press any key to exit. The `.scr` is a single self-contained file, so .NET doesn't need to be installed.
+Choose **Test** instead to try it without installing. Move the mouse or press any key to exit. The `.scr` is a single self-contained 13 MB file, so .NET doesn't need to be installed.
 
 ## What's on screen
 
@@ -25,16 +25,15 @@ Choose **Test** instead to try it without installing. Move the mouse or press an
 
 Requires the .NET 8 SDK or newer.
 
+It's a single MonoGame (OpenGL) project that runs on Windows, Linux, and macOS.
+
 ```sh
-# Windows DirectX build (the real screensaver), producing a single StateYourName.exe
-dotnet publish platforms/Windows -c Release -r win-x64 --self-contained -p:PublishSingleFile=true -o publish
+# Run it in a window while working on it
+dotnet run --project src/Screensaver -- --windowed --size 1600x900
+
+# Publish the screensaver: one self-contained, trimmed StateYourName.exe (~13 MB)
+dotnet publish src/Screensaver -c Release -r win-x64 -o publish
 # then rename publish/StateYourName.exe to StateYourName.scr
-```
-
-The same code also builds against MonoGame's cross-platform OpenGL backend, for working on it from Linux or macOS:
-
-```sh
-dotnet run --project platforms/DesktopGL -- --windowed --size 1600x900
 ```
 
 | Option | |
@@ -49,20 +48,18 @@ CI (`.github/workflows/build.yml`) builds the `.scr` on every push. Pushing a `v
 ### Layout
 
 ```
-src/Screensaver/      all the code, shared by both builds
+src/Screensaver/      the project: StateYourName.csproj, app manifest, icon, font
   World/              star system generation, orbits, the system view renderer, starfield
   Hud/                terminal panels: logs, ship systems, readouts, boot screen
   Rendering/          vector primitives, text, palette
   Director.cs         boot, scan, cruise, and jump cycle
   ScreensaverGame.cs  render pipeline (glow, scanlines) and screensaver input rules
-platforms/Windows     MonoGame WindowsDX project for the .scr
-platforms/DesktopGL   MonoGame DesktopGL project for cross-platform development
 tools/make-icon.py    generates the app icon
 ```
 
 ## Credits
 
-- Started from Cam Abreu's [MonogameScreenSaver](https://github.com/JamCamAbreu/MonogameScreenSaver) template (GPL-3.0). It's updated here to MonoGame 3.8.5 and .NET 8, and the content pipeline is dropped in favor of runtime font rendering.
+- Started from Cam Abreu's [MonogameScreenSaver](https://github.com/JamCamAbreu/MonogameScreenSaver) template (GPL-3.0). It's updated here to MonoGame 3.8.5 and .NET 8, moved to the cross-platform OpenGL backend (DirectX needs Windows Forms, which can't be trimmed), and the content pipeline is dropped in favor of runtime font rendering.
 - [MonoGame](https://monogame.net) (Ms-PL) and [FontStashSharp](https://github.com/FontStashSharp/FontStashSharp) (zlib).
 - Text uses Windows' Courier New when available, the game's own font. Otherwise it uses the bundled [Courier Prime](https://github.com/quoteunquoteapps/CourierPrime) (SIL OFL 1.1, see `src/Screensaver/Fonts/OFL.txt`).
 
