@@ -1,0 +1,17 @@
+STATE YOUR NAME - SCREENSAVER
+=============================
+
+Install
+  1. Unzip this folder anywhere you like to keep it.
+  2. Right-click StateYourName.scr and choose "Install".
+     (Or copy it into C:\Windows\System32 to have it appear in the list.)
+  3. In Screen Saver Settings, pick "StateYourName".
+
+To try it without installing, right-click StateYourName.scr and choose "Test".
+Move the mouse or press any key to exit.
+
+Windows SmartScreen may warn about an unrecognized app because the file isn't
+code-signed. Choose "More info" > "Run anyway" if you trust the source:
+https://github.com/dalton-baker/state-your-name-screensaver
+
+Licensed under the GNU GPL v3. See LICENSE.txt.

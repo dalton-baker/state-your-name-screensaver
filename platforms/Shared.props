@@ -1,0 +1,10 @@
+<Project>
+  <!-- Everything except the MonoGame platform package is shared between builds. -->
+  <ItemGroup>
+    <Compile Include="..\..\src\Screensaver\**\*.cs" LinkBase="Screensaver" />
+    <EmbeddedResource Include="..\..\src\Screensaver\Fonts\CourierPrime-Regular.ttf" LogicalName="CourierPrime-Regular.ttf" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="FontStashSharp.MonoGame" Version="1.6.1" />
+  </ItemGroup>
+</Project>

@@ -1,0 +1,26 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!-- The real screensaver: DirectX on Windows, published as StateYourName.scr. -->
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <!-- Lets Linux CI and dev machines compile the Windows build too. -->
+    <EnableWindowsTargeting>true</EnableWindowsTargeting>
+    <UseWindowsForms>true</UseWindowsForms>
+    <RollForward>Major</RollForward>
+    <AssemblyName>StateYourName</AssemblyName>
+    <RootNamespace>StateYourNameScreensaver</RootNamespace>
+    <DefineConstants>$(DefineConstants);WINDOWS</DefineConstants>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <!-- The manifest's DPI awareness is for the DirectX window, not WinForms (only used for the settings message box). -->
+    <NoWarn>$(NoWarn);WFAC010</NoWarn>
+    <ApplicationIcon>Icon.ico</ApplicationIcon>
+    <Nullable>enable</Nullable>
+    <InvariantGlobalization>true</InvariantGlobalization>
+  </PropertyGroup>
+
+  <Import Project="..\Shared.props" />
+
+  <ItemGroup>
+    <PackageReference Include="MonoGame.Framework.WindowsDX" Version="3.8.5.1" />
+  </ItemGroup>
+</Project>
