@@ -172,7 +172,7 @@ public sealed class SystemView
 		new(5.5f, 1.15f), new(6.3f, 0.4f)
 	};
 
-	const float ShipScale = 1.25f;
+	const float ShipScale = 0.85f;
 
 	void DrawShip(Prim p, Ship ship, float fade)
 	{
