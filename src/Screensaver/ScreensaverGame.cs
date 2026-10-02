@@ -47,8 +47,9 @@ public sealed class ScreensaverGame : Game
 			GraphicsProfile = GraphicsProfile.HiDef
 		};
 		IsMouseVisible = options.Windowed;
-		IsFixedTimeStep = options.CaptureDirectory != null;
-		if (IsFixedTimeStep) TargetElapsedTime = TimeSpan.FromSeconds(1.0 / options.CaptureFps);
+		// Variable timestep means exactly one Update per Draw. Capture mode relies on that to
+		// advance precisely 1/fps per recorded frame, however slowly frames render.
+		IsFixedTimeStep = false;
 		Window.Title = "State Your Name";
 	}
 
@@ -106,7 +107,10 @@ public sealed class ScreensaverGame : Game
 	{
 		_frames++;
 		if (_options.CaptureDirectory == null && ShouldExit()) { Exit(); return; }
-		Step((float)Math.Min(gameTime.ElapsedGameTime.TotalSeconds, 0.1));
+		float dt = _options.CaptureDirectory != null
+			? 1f / _options.CaptureFps
+			: (float)Math.Min(gameTime.ElapsedGameTime.TotalSeconds, 0.1);
+		Step(dt);
 		base.Update(gameTime);
 	}
 
