@@ -1,0 +1,57 @@
+name: Build
+
+on:
+  push:
+    branches: [main]
+    tags: ['v*']
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: write   # attach the screensaver to tagged releases
+
+jobs:
+  windows:
+    name: Windows screensaver (.scr)
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-dotnet@v6
+        with:
+          dotnet-version: 8.0.x
+
+      # Self-contained, trimmed, single-file (see the csproj), so no .NET install is needed.
+      - name: Publish single-file executable
+        run: dotnet publish src/Screensaver/StateYourName.csproj -c Release -r win-x64 -o artifacts/publish
+
+      - name: Package StateYourName.scr
+        shell: pwsh
+        run: |
+          $out = "artifacts/StateYourName"
+          New-Item -ItemType Directory -Force $out | Out-Null
+          Copy-Item artifacts/publish/StateYourName.exe "$out/StateYourName.scr"
+          Copy-Item docs/INSTALL.txt "$out/INSTALL.txt"
+          Copy-Item LICENSE "$out/LICENSE.txt"
+          Compress-Archive -Path "$out/*" -DestinationPath artifacts/StateYourName-screensaver.zip -Force
+          Get-ChildItem artifacts/StateYourName, artifacts/*.zip | Format-Table Name, Length
+
+      - uses: actions/upload-artifact@v7
+        with:
+          name: StateYourName-screensaver
+          path: artifacts/StateYourName-screensaver.zip
+
+      - name: Attach to release
+        if: startsWith(github.ref, 'refs/tags/v')
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release create "${{ github.ref_name }}" artifacts/StateYourName-screensaver.zip --title "${{ github.ref_name }}" --generate-notes
+
+  linux:
+    name: Linux build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-dotnet@v6
+        with:
+          dotnet-version: 8.0.x
+      - run: dotnet publish src/Screensaver/StateYourName.csproj -c Release -r linux-x64 -o artifacts/linux
